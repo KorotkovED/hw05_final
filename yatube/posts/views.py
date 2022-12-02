@@ -144,7 +144,7 @@ def follow_index(request):
                                                                   flat=True)
     posts = Post.objects.filter(author_id__in=author)
     paginator = Paginator(posts, POSTS)
-    page_number = request.GET.get("page")
+    page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context = {
         'page_obj': page_obj,
