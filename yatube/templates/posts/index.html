@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% comment %} {% load cache %} {% endcomment %}
+{% load cache %}
 {% block content %}
 {%load thumbnail%}
 <!-- класс py-5 создает отступы сверху и снизу блока -->
@@ -12,7 +12,7 @@
     <a>{{text}}</a>
   </p>
   <article>
-    {% comment %} {% cache 20 index_page %} {% endcomment %}
+    {% cache 20 index_page %}
     {% include 'posts/includes/switcher.html' %}
     {% for post in page_obj %}
   <ul>
@@ -33,7 +33,7 @@
   <a href="{% url 'posts:post_detail' post.id %}">подробная информация</a>
   {% if not forloop.last %}<hr>{% endif %}
   {% endfor %} 
-  {% comment %} {% endcache %}  {% endcomment %}
+  {% endcache %} 
   </article>
   <!-- под последним постом нет линии -->
   {% include 'includes/paginator.html' %}

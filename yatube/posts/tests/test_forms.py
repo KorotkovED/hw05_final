@@ -7,6 +7,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 import tempfile
 from django.conf import settings
 import shutil
+from django.core.cache import cache
 
 User = get_user_model()
 
@@ -55,6 +56,7 @@ class PostFormsTest(TestCase):
     def tearDownClass(cls):
         super().tearDownClass()
         shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
+        cache.clear()
 
     def test_create_post(self):
         """Валидная форма создает запись в create_post."""
