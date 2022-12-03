@@ -143,7 +143,7 @@ def follow_index(request):
     author = Follow.objects.filter(user=request.user).values_list('author_id',
                                                                   flat=True)
     posts = Post.objects.filter(author_id__in=author)
-    page_obj = pagination(posts)
+    page_obj = pagination(request, posts)
     context = {
         'page_obj': page_obj,
         'title': 'Посты ваших любимых авторов'
