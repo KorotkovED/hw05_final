@@ -1,7 +1,7 @@
 from django.core.paginator import Paginator
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth import get_user_model
-from .models import Post, Group, Comment, Follow
+from .models import Post, Group, Follow
 from .forms import CommentForm, PostForm
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_page
@@ -19,7 +19,7 @@ def pagination(request, post_list):
     return page_obj
 
 
-@cache_page(60 * 20)
+@cache_page(20)
 def index(request):
     post_list = Post.objects.all()[:POSTS]
     title = 'Последние обновления на сайте'
@@ -65,9 +65,9 @@ def profile(request, username):
 
 
 def post_detail(request, post_id):
-    post = Post.objects.get(pk=post_id)
+    post = get_object_or_404(Post, pk=post_id)
     form = CommentForm(request.POST or None)
-    comments = Comment.objects.filter(post=post)
+    comments = post.comments.all()
     post_num = post.author.posts.count()
     context = {
         'post': post,
@@ -127,7 +127,7 @@ def post_edit(request, post_id):
 
 @login_required
 def add_comment(request, post_id):
-    post = Post.objects.get(pk=post_id)
+    post = get_object_or_404(Post, pk=post_id)
     form = CommentForm(request.POST or None)
     if form.is_valid():
         comment = form.save(commit=False)
@@ -143,9 +143,7 @@ def follow_index(request):
     author = Follow.objects.filter(user=request.user).values_list('author_id',
                                                                   flat=True)
     posts = Post.objects.filter(author_id__in=author)
-    paginator = Paginator(posts, POSTS)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    page_obj = pagination(posts)
     context = {
         'page_obj': page_obj,
         'title': 'Посты ваших любимых авторов'
