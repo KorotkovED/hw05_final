@@ -202,6 +202,10 @@ class PostViewsTest(TestCase):
         response_2 = self.guest_client.get(reverse('posts:index'))
         obj_2 = response_2.content
         self.assertEqual(obj_1, obj_2)
+        cache.clear()
+        response_3 = self.guest_client.get(reverse('posts:index'))
+        obj_3 = response_3.content
+        self.assertNotEqual(obj_3, obj_2)
 
     def test_follow_psge(self):
         """Проверка страницы подписок."""
